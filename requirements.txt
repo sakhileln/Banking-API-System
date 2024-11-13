@@ -1,0 +1,26 @@
+SETUP INSTRUCTIONS
+
+1. Environment Setup
+  -(Optional) Create a virtual environment:
+  bash(paste the three line code below):
+    python3 -m venv venv
+    source venv/bin/activate      # macOS/Linux
+    venv\Scripts\activate         # Windows
+
+2. Install Requirements
+  -Create a requirements.txt file with the following content:
+  plaintext:   
+    Flask==2.2.2
+    Flask-SQLAlchemy==3.0.3
+    SQLAlchemy==1.4.44
+
+  -Then, install these requirements:
+    bash: 
+      pip install -r requirements
+
+3.Run Application 
+  -Start the Flask application:
+  bash:
+    python3 app.py
+
+  -The app will run on http://127.0.0.1:5000/
