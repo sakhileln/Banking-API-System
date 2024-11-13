@@ -49,6 +49,7 @@ def create_database() -> None:
     cursor.close()
     connection.close()
 
+
 if __name__ == "__main__":
     # Test cases
     # Run once, to create the database for the Banking API
