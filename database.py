@@ -2,6 +2,14 @@ from sqlite3 import connect
 
 
 def create_database() -> None:
+    """
+    Create the banking API database with transactions and accounts.
+
+    Parameters:
+        None
+    Return:
+        None
+    """
     # Initialize databbase connection
     connection = connect("database.db")
     # Get cursor to execute SQL commands
