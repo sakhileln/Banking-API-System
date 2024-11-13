@@ -1,5 +1,3 @@
-# Backend-Daily
-
 # Banking API System
 
 ## Overview
