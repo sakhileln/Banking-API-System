@@ -12,46 +12,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 
-# Test cases:
-# with app.app_context():
-#     db.create_all() # Create all tabkes in database [if they do not exist]
-#     # Create new account
-#     # account = Accounts(
-#     #     first_name="Zethe", 
-#     #     last_name="Ndlazi", 
-#     #     email="zethe@orbital.stars", 
-#     #     balance=3.47
-#     # )
-#     # db.session.add(account)
-#     # db.session.commit()
-
-#     # Query and check if the account was added
-#     account = Accounts.query.filter_by(email="zethe@orbital.stars").first()
-
-#     # Simulate a deposit
-#     deposit_amount = Decimal('23.6')
-#     account.balance += deposit_amount
-
-#     # Create transaction record for deposit
-#     transaction = Transactions(
-#         account_id=account.account_id, 
-#         amount=deposit_amount, 
-#         type=TransactionType.deposit
-#     )
-#     db.session.add(transaction)
-#     db.session.commit()
-
-#     # Output the result
-#     print(f"Account : {account.first_name} {account.last_name}, Balance: ZAR {account.balance:.2f}")
-#     print(f"Deposit of: ZAR {deposit_amount} successful. New balance: ZAR {account.balance:.2f}")
-
-
 @app.route("/accounts", methods=["POST"])
 def create_account():
     data = request.get_json()
     new_account = Accounts(
-        first_name=data["first_name"], last_name=data["last_name"],
-        email=data["email"], balance=data["balance"]
+        first_name=data["first_name"],
+        last_name=data["last_name"],
+        email=data["email"],
+        balance=data["balance"],
     )
     db.session.add(new_account)
     db.session.commit()
