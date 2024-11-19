@@ -1,7 +1,5 @@
-from decimal import Decimal
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from models import db, Accounts, Transactions, TransactionType
+from models import db, Accounts, Transactions
 
 app = Flask(__name__)
 
