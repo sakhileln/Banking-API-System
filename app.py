@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from models import db, Accounts, Transactions
 
 app = Flask(__name__)
@@ -92,6 +92,11 @@ def withdraw(account_id):
     db.session.add(new_transaction)
     db.session.commit()
     return jsonify({"message": f"Withdrew {amount} !"})
+
+
+@app.route("/html")
+def test_html():
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
