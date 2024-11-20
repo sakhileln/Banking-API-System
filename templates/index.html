@@ -1,6 +1,147 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <h1>Bank API</h1>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank API Frontend</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+<body>
+    <h1>Bank API Management</h1>
+
+    <!-- Create Account Form -->
+    <section>
+        <h2>Create Account</h2>
+        <form id="create-account-form">
+            <input type="text" id="first_name" placeholder="First Name" required>
+            <input type="text" id="last_name" placeholder="Last Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="number" id="balance" placeholder="Initial Balance" required>
+            <button type="submit">Create Account</button>
+        </form>
+        <div id="create-account-message"></div>
+    </section>
+
+    <!-- View Account -->
+    <section>
+        <h2>View Account</h2>
+        <input type="number" id="view-account-id" placeholder="Account ID">
+        <button onclick="viewAccount()">View Account</button>
+        <div id="view-account-details"></div>
+    </section>
+
+    <!-- Update Account -->
+    <section>
+        <h2>Update Account</h2>
+        <input type="number" id="update-account-id" placeholder="Account ID" required>
+        <input type="text" id="update-account-name" placeholder="New Name">
+        <button onclick="updateAccount()">Update Account</button>
+        <div id="update-account-message"></div>
+    </section>
+
+    <!-- Delete Account -->
+    <section>
+        <h2>Delete Account</h2>
+        <input type="number" id="delete-account-id" placeholder="Account ID">
+        <button onclick="deleteAccount()">Delete Account</button>
+        <div id="delete-account-message"></div>
+    </section>
+
+    <!-- Deposit and Withdraw -->
+    <section>
+        <h2>Make a Transaction</h2>
+        <input type="number" id="transaction-account-id" placeholder="Account ID" required>
+        <input type="number" id="transaction-amount" placeholder="Amount" required>
+        <button onclick="deposit()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+        <div id="transaction-message"></div>
+    </section>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:5000";
+
+        // Create Account
+        document.getElementById("create-account-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const first_name = document.getElementById("first_name").value;
+            const last_name = document.getElementById("last_name").value;
+            const email = document.getElementById("email").value;
+            const balance = parseFloat(document.getElementById("balance").value);
+
+            const response = await fetch(`${API_BASE}/accounts`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ first_name, last_name, email, balance })
+            });
+
+            const result = await response.json();
+            document.getElementById("create-account-message").innerText = result.message || result.error;
+        });
+
+        // View Account
+        async function viewAccount() {
+            const account_id = document.getElementById("view-account-id").value;
+            const response = await fetch(`${API_BASE}/accounts/${account_id}`);
+            const result = await response.json();
+            document.getElementById("view-account-details").innerText = JSON.stringify(result, null, 2);
+        }
+
+        // Update Account
+        async function updateAccount() {
+            const account_id = document.getElementById("update-account-id").value;
+            const name = document.getElementById("update-account-name").value;
+
+            const response = await fetch(`${API_BASE}/accounts/${account_id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+            });
+
+            const result = await response.json();
+            document.getElementById("update-account-message").innerText = result.message || result.error;
+        }
+
+        // Delete Account
+        async function deleteAccount() {
+            const account_id = document.getElementById("delete-account-id").value;
+
+            const response = await fetch(`${API_BASE}/accounts/${account_id}`, {
+                method: "DELETE"
+            });
+
+            const result = await response.json();
+            document.getElementById("delete-account-message").innerText = result.message || result.error;
+        }
+
+        // Deposit
+        async function deposit() {
+            const account_id = document.getElementById("transaction-account-id").value;
+            const amount = parseFloat(document.getElementById("transaction-amount").value);
+
+            const response = await fetch(`${API_BASE}/accounts/${account_id}/deposit`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount })
+            });
+
+            const result = await response.json();
+            document.getElementById("transaction-message").innerText = result.message || result.error;
+        }
+
+        // Withdraw
+        async function withdraw() {
+            const account_id = document.getElementById("transaction-account-id").value;
+            const amount = parseFloat(document.getElementById("transaction-amount").value);
+
+            const response = await fetch(`${API_BASE}/accounts/${account_id}/withdraw`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount })
+            });
+
+            const result = await response.json();
+            document.getElementById("transaction-message").innerText = result.message || result.error;
+        }
+    </script>
+</body>
 </html>
