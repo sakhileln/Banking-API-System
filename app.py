@@ -1,3 +1,4 @@
+from decimal import Decimal
 from flask import Flask, request, jsonify, render_template
 from models import db, Accounts, Transactions
 
@@ -69,7 +70,7 @@ def deposit(account_id):
         return jsonify({"error": "Account not found"}), 404
     data = request.get_json()
     amount = data["amount"]
-    accounts.balance += amount
+    accounts.balance += Decimal(amount)
     new_transaction = Transactions(account_id=account_id, type="deposit", amount=amount)
     db.session.add(new_transaction)
     db.session.commit()
@@ -85,7 +86,7 @@ def withdraw(account_id):
     amount = data["amount"]
     if amount > accounts.balance:
         return jsonify({"error": "Insufficient funds! "}), 400
-    accounts.balance -= amount
+    accounts.balance -= Decimal(amount)
     new_transaction = Transactions(
         account_id=account_id, type="withdraw", amount=amount
     )
