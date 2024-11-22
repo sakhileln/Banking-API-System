@@ -48,7 +48,12 @@ def update_account(account_id):
     if not accounts:
         return jsonify({"error": "Account not found"}), 404
     data = request.get_json()
-    accounts.name = data["name"]
+    if data['first_name']:
+        accounts.first_name = data["first_name"]
+    elif data['last_name']:
+        accounts.last_name = data["last_name"]
+    elif data['email']:
+        accounts.email = data["email"]
     db.session.commit()
     return jsonify({"message": "Account Updated!"})
 
