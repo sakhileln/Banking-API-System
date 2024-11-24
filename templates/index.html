@@ -3,145 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank API Frontend</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <title>Bank API Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Same styles as before */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #4facfe, #00f2fe);
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, #00c6ff, #0072ff);
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #0072ff;
+            border-radius: 5px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        nav a:hover {
+            background: #0056cc;
+        }
+
+        section {
+            display: none; /* Initially hide all sections */
+            margin: 50px 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .active {
+            display: block; /* Show only the active section */
+        }
+
+        .interactive-card {
+            text-align: center;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .interactive-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .interactive-card label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .interactive-card input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 0.9rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .interactive-card {
+                margin: 10px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .interactive-card {
+                width: 90%;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Style for the transaction section */
+#transaction {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#transaction h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+    color: #555;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus, button:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+/* Style for the select dropdown */
+.styled-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"%3E%3Cpath fill="none" d="M2 6h16l-8 8z"/%3E%3C/svg%3E');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#transaction-message {
+    text-align: center;
+    color: #e74c3c;
+    margin-top: 10px;
+}
+
+    </style>
 </head>
 <body>
-    <h1>Bank API Management</h1>
+    
+    <header>
+        <h1>Bank API Management</h1>
+        <p>Manage your bank accounts efficiently and securely!</p>
+        <nav>
+            <a href="#home" class="animated-button" onclick="navigateToSection('home')">Home</a>
+            <a href="#create-account" class="animated-button" onclick="navigateToSection('create-account')">Create Account</a>
+            <a href="#view-account" class="animated-button" onclick="navigateToSection('view-account')">View Account</a>
+            <a href="#update-account" class="animated-button" onclick="navigateToSection('update-account')">Update Account</a>
+            <a href="#delete-account" class="animated-button" onclick="navigateToSection('delete-account')">Delete Account</a>
+            <a href="#transaction" class="animated-button" onclick="navigateToSection('transaction')">Make a Transaction</a>
+            <a href="#login" class="animated-button" onclick="navigateToSection('login')">Login</a>
+            <a href="#register" class="animated-button" onclick="navigateToSection('register')">Register</a>
+            <a href="#" class="animated-button" onclick="logout()">Logout</a>
+        </nav>
+    </header>
 
-    <!-- Create Account Form -->
-    <section>
-        <h2>Create Account</h2>
-        <form id="create-account-form">
-            <input type="text" id="first_name" placeholder="First Name" required>
-            <input type="text" id="last_name" placeholder="Last Name" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="number" id="balance" placeholder="Initial Balance" required>
-            <button type="submit">Create Account</button>
-        </form>
-        <div id="create-account-message"></div>
-    </section>
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="interactive-card active">
+            <h2>Welcome to Bank API Management</h2>
+            <p>Our app provides a simple way to manage your bank accounts efficiently and securely.</p>
+            <p>With features like account creation, viewing, updating, deleting, and making transactions, you can easily manage all aspects of your banking experience.</p>
+            <p>Start managing your bank account today with just a few clicks!</p>
+        </section>
 
-    <!-- View Account -->
-    <section>
-        <h2>View Account</h2>
-        <input type="number" id="view-account-id" placeholder="Account ID">
-        <button onclick="viewAccount()">View Account</button>
-        <div id="view-account-details"></div>
-    </section>
+        <!-- Create Account Section -->
+        <section id="create-account" class="interactive-card">
+            <h2>Create Account</h2>
+            <label for="create-account-name">Account Name:</label>
+            <input type="text" id="create-account-name" placeholder="Account Name">
+            <label for="create-account-email">Email:</label>
+            <input type="email" id="create-account-email" placeholder="Email">
+            <button onclick="createAccount()">Create Account</button>
+            <div id="create-account-message"></div>
+            <p>Already have an account? <a href="#" onclick="navigateToSection('login')">Login</a></p>
+        </section>
 
-    <!-- Update Account -->
-    <section>
-        <h2>Update Account</h2>
-        <input type="number" id="update-account-id" placeholder="Account ID" required>
-        <input type="text" id="update-account-name" placeholder="New Name">
-        <button onclick="updateAccount()">Update Account</button>
-        <div id="update-account-message"></div>
-    </section>
+        <!-- View Account Section -->
+        <section id="view-account" class="interactive-card">
+            <h2>View Account</h2>
+            <label for="view-account-email">Email:</label>
+            <input type="email" id="view-account-email" placeholder="Email">
+            <button onclick="viewAccount()">View Account</button>
+            <div id="view-account-details"></div>
+        </section>
 
-    <!-- Delete Account -->
-    <section>
-        <h2>Delete Account</h2>
-        <input type="number" id="delete-account-id" placeholder="Account ID">
-        <button onclick="deleteAccount()">Delete Account</button>
-        <div id="delete-account-message"></div>
-    </section>
+        <!-- Update Account Section -->
+        <section id="update-account" class="interactive-card">
+            <h2>Update Account</h2>
+            <label for="update-account-email">Email:</label>
+            <input type="email" id="update-account-email" placeholder="Email">
+            <label for="update-account-name">New Name:</label>
+            <input type="text" id="update-account-name" placeholder="New Name">
+            <button onclick="updateAccount()">Update Account</button>
+            <div id="update-account-message"></div>
+        </section>
 
-    <!-- Deposit and Withdraw -->
-    <section>
-        <h2>Make a Transaction</h2>
-        <input type="number" id="transaction-account-id" placeholder="Account ID" required>
-        <input type="number" id="transaction-amount" placeholder="Amount" required>
-        <button onclick="deposit()">Deposit</button>
-        <button onclick="withdraw()">Withdraw</button>
-        <div id="transaction-message"></div>
-    </section>
+        <!-- Delete Account Section -->
+        <section id="delete-account" class="interactive-card">
+            <h2>Delete Account</h2>
+            <label for="delete-account-email">Email:</label>
+            <input type="email" id="delete-account-email" placeholder="Email">
+            <button onclick="deleteAccount()">Delete Account</button>
+            <div id="delete-account-message"></div>
+        </section>
+
+        <!-- Transaction Section -->
+        <section id="transaction" class="interactive-card">
+            <h2>Make a Transaction</h2>
+            <label for="transaction-email">Email:</label>
+            <input type="email" id="transaction-email" placeholder="Email">
+            
+            <label for="transaction-type">Transaction Type:</label>
+            <select id="transaction-type" class="styled-select">
+                <option value="deposit">Deposit</option>
+                <option value="withdraw">Withdraw</option>
+            </select>
+            
+            <label for="transaction-amount">Amount:</label>
+            <input type="number" id="transaction-amount" placeholder="Amount">
+            
+            <button onclick="transaction()">Make Transaction</button>
+            <div id="transaction-message"></div>
+        </section>
+        
+        <!-- Login Section -->
+        <section id="login" class="interactive-card">
+            <h2>Login</h2>
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" placeholder="Enter your email">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" placeholder="Enter your password">
+            <button onclick="login()">Login</button>
+            <div id="login-message"></div>
+            <p>Don't have an account? <a href="#" onclick="navigateToSection('register')">Register</a></p>
+        </section>
+
+        <!-- Register Section -->
+        <section id="register" class="interactive-card">
+            <h2>Register</h2>
+            <label for="register-email">Email:</label>
+            <input type="email" id="register-email" placeholder="Enter your email">
+            <label for="register-password">Password:</label>
+            <input type="password" id="register-password" placeholder="Enter your password">
+            <button onclick="register()">Register</button>
+            <div id="register-message"></div>
+            <p>Already have an account? <a href="#" onclick="navigateToSection('login')">Login</a></p>
+        </section>
+    </main>
 
     <script>
-        const API_BASE = "http://127.0.0.1:5000";
+        let loggedIn = false;
 
-        // Create Account
-        document.getElementById("create-account-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const first_name = document.getElementById("first_name").value;
-            const last_name = document.getElementById("last_name").value;
-            const email = document.getElementById("email").value;
-            const balance = parseFloat(document.getElementById("balance").value);
+        // Check if user is logged in on page load
+        window.onload = function() {
+            if (sessionStorage.getItem('loggedIn') === 'true') {
+                loggedIn = true;
+                navigateToSection('home');  // Navigate to home page
+            } else {
+                navigateToSection('login'); // Show login page
+            }
+        };
 
-            const response = await fetch(`${API_BASE}/accounts`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ first_name, last_name, email, balance })
+        // Function to navigate to specific sections
+        function navigateToSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('active');
             });
 
-            const result = await response.json();
-            document.getElementById("create-account-message").innerText = result.message || result.error;
-        });
-
-        // View Account
-        async function viewAccount() {
-            const account_id = document.getElementById("view-account-id").value;
-            const response = await fetch(`${API_BASE}/accounts/${account_id}`);
-            const result = await response.json();
-            document.getElementById("view-account-details").innerText = JSON.stringify(result, null, 2);
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                if (sectionId !== 'login' && sectionId !== 'register' && !loggedIn) {
+                    navigateToSection('login'); // Redirect to login if not logged in
+                    alert("Please log in to access this page.");
+                    return;
+                }
+                targetSection.classList.add('active');
+            }
         }
 
-        // Update Account
-        async function updateAccount() {
-            const account_id = document.getElementById("update-account-id").value;
-            const name = document.getElementById("update-account-name").value;
+        // Simulated login function
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-            const response = await fetch(`${API_BASE}/accounts/${account_id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name })
-            });
-
-            const result = await response.json();
-            document.getElementById("update-account-message").innerText = result.message || result.error;
+            if (email === 'user@example.com' && password === 'password123') {
+                loggedIn = true;
+                sessionStorage.setItem('loggedIn', 'true');  // Store login state
+                navigateToSection('home');
+                alert('Login successful');
+            } else {
+                document.getElementById('login-message').innerText = 'Invalid credentials. Please try again.';
+            }
         }
 
-        // Delete Account
-        async function deleteAccount() {
-            const account_id = document.getElementById("delete-account-id").value;
-
-            const response = await fetch(`${API_BASE}/accounts/${account_id}`, {
-                method: "DELETE"
-            });
-
-            const result = await response.json();
-            document.getElementById("delete-account-message").innerText = result.message || result.error;
+        // Simulated logout function
+        function logout() {
+            loggedIn = false;
+            sessionStorage.removeItem('loggedIn');  // Remove login state
+            alert('Logged out successfully');
+            navigateToSection('login');
         }
 
-        // Deposit
-        async function deposit() {
-            const account_id = document.getElementById("transaction-account-id").value;
-            const amount = parseFloat(document.getElementById("transaction-amount").value);
-
-            const response = await fetch(`${API_BASE}/accounts/${account_id}/deposit`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount })
-            });
-
-            const result = await response.json();
-            document.getElementById("transaction-message").innerText = result.message || result.error;
+        // Sample functions for account actions
+        function createAccount() {
+            alert('Account Created!');
         }
 
-        // Withdraw
-        async function withdraw() {
-            const account_id = document.getElementById("transaction-account-id").value;
-            const amount = parseFloat(document.getElementById("transaction-amount").value);
+        function viewAccount() {
+            alert('Account Viewed!');
+        }
 
-            const response = await fetch(`${API_BASE}/accounts/${account_id}/withdraw`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount })
-            });
+        function updateAccount() {
+            alert('Account Updated!');
+        }
 
-            const result = await response.json();
-            document.getElementById("transaction-message").innerText = result.message || result.error;
+        function deleteAccount() {
+            alert('Account Deleted!');
+        }
+
+        function transaction() {
+            alert('Transaction Completed!');
         }
     </script>
+
 </body>
 </html>
