@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, Email
+=======
+from decimal import Decimal
+from flask import Flask, request, jsonify, render_template
+>>>>>>> 4ed6f32d326c84c30ec89500388101defb61a9e9
 from models import db, Accounts, Transactions
 
 app = Flask(__name__)
@@ -60,8 +65,17 @@ def update_account(account_id):
     if not accounts:
         return jsonify({"error": "Account not found"}), 404
     data = request.get_json()
+<<<<<<< HEAD
     accounts.first_name = data["first_name"]
     accounts.last_name = data["last_name"]
+=======
+    if data['first_name']:
+        accounts.first_name = data["first_name"]
+    elif data['last_name']:
+        accounts.last_name = data["last_name"]
+    elif data['email']:
+        accounts.email = data["email"]
+>>>>>>> 4ed6f32d326c84c30ec89500388101defb61a9e9
     db.session.commit()
     return jsonify({"message": "Account Updated!"})
 
@@ -81,7 +95,7 @@ def deposit(account_id):
         return jsonify({"error": "Account not found"}), 404
     data = request.get_json()
     amount = data["amount"]
-    accounts.balance += amount
+    accounts.balance += Decimal(amount)
     new_transaction = Transactions(account_id=account_id, type="deposit", amount=amount)
     db.session.add(new_transaction)
     db.session.commit()
@@ -95,9 +109,17 @@ def withdraw(account_id):
     data = request.get_json()
     amount = data["amount"]
     if amount > accounts.balance:
+<<<<<<< HEAD
         return jsonify({"error": "Insufficient funds!"}), 400
     accounts.balance -= amount
     new_transaction = Transactions(account_id=account_id, type="withdraw", amount=amount)
+=======
+        return jsonify({"error": "Insufficient funds! "}), 400
+    accounts.balance -= Decimal(amount)
+    new_transaction = Transactions(
+        account_id=account_id, type="withdraw", amount=amount
+    )
+>>>>>>> 4ed6f32d326c84c30ec89500388101defb61a9e9
     db.session.add(new_transaction)
     db.session.commit()
     return jsonify({"message": f"Withdrew {amount} !"})
